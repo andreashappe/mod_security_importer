@@ -1,9 +1,9 @@
-from nose.tools import *
-from log_importer.log_import.parser import *
-from log_importer.log_import.reader import *
-from log_importer.data.manager import setup_connection
+import datetime
 
-import log_importer
+from log_importer.log_import.parser import parse_incident
+from log_importer.log_import.reader import read_file
+from log_importer.data.db_helper import setup_connection
+from log_importer.data.objects import Incident
 
 def common_data(i, incident):
     assert i.fragment_id == '7cf8df3f'
@@ -18,14 +18,14 @@ def common_data(i, incident):
     assert i.method == "GET", "unexpected HTTP method, was: %r" % incident.method
 
     expected_ids = sorted([960024, 981203])
-    found_ids = sorted(map(lambda x: x.incident_catalog.catalog_id, i.details))
+    found_ids = sorted([x.incident_catalog.catalog_id for x in  i.details])
     assert found_ids == expected_ids
 
 def test_import_without_parts():
     result = read_file('log_importer/tests/test_files/file_read_test.txt')
     session = setup_connection(create_db=True)
     incident = parse_incident(session, result[0], result[1], include_parts=False)
-   
+
     session.add(incident)
     session.commit()
 
@@ -39,7 +39,7 @@ def test_import_with_parts():
     result = read_file('log_importer/tests/test_files/file_read_test.txt')
     session = setup_connection(create_db=True)
     incident = parse_incident(session, result[0], result[1], include_parts=True)
-   
+
     session.add(incident)
     session.commit()
 

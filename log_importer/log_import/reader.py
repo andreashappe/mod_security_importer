@@ -1,5 +1,3 @@
-from log_importer.data.objects import Part
-
 import re
 
 def read_from_file(f):
@@ -46,9 +44,9 @@ def read_from_file(f):
 
     return (fragment_id, parts)
 
-# read a file (given by the path parameter) and return it's
-# contents in a tupel (fragment_id, {part_category: part})
 def read_file(path):
-
-    with open(path, 'r') as f:
-        return read_from_file(f)
+    """read a file (given by the path parameter) and return it's
+       contents in a tupel (fragment_id, {part_category: part})
+    """
+    with open(path, 'r') as source:
+        return read_from_file(source)

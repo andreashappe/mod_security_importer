@@ -1,8 +1,9 @@
+""" all objects that will be stored within the database """
+
 from sqlalchemy import Column, String, Integer, ForeignKey, DateTime
 from sqlalchemy.orm import relationship
-from sqlalchemy.ext.declarative import declarative_base
 
-from log_importer.data.manager import get_base
+from log_importer.data.db_helper import get_base
 
 Base = get_base()
 
@@ -30,10 +31,10 @@ class Incident(Base):
     unique_id = Column(String)
 
     destination_id = Column(Integer, ForeignKey(Destination.id))
-    destination    = relationship(Destination)
+    destination = relationship(Destination)
 
     source_id = Column(Integer, ForeignKey(Source.id))
-    source    = relationship(Source)
+    source = relationship(Source)
 
     # (optional parts)
     parts = relationship("Part", backref="incident")
@@ -62,7 +63,7 @@ class IncidentDetail(Base):
     incident_id = Column(Integer, ForeignKey(Incident.id))
 
     incident_catalog_id = Column(Integer, ForeignKey(IncidentCatalogEntry.id))
-    incident_catalog   = relationship(IncidentCatalogEntry)
+    incident_catalog = relationship(IncidentCatalogEntry)
 
 
 class Part(Base):

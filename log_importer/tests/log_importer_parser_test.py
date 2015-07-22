@@ -1,9 +1,7 @@
-from nose.tools import *
-from log_importer.log_import.parser import *
-from log_importer.log_import.reader import *
-from log_importer.data.manager import setup_connection
+from log_importer.log_import.parser import parse_incident, parse_part_A, parse_H_detail_message
+from log_importer.log_import.reader import read_file
+from log_importer.data.db_helper import setup_connection
 
-import log_importer
 import datetime
 
 # test with example from https://github.com/SpiderLabs/ModSecurity/wiki/ModSecurity-2-Data-Formats#Audit_Log_Header_code_classliteralAcode
@@ -29,7 +27,6 @@ def test_parse_H_message():
     assert results['line'] == "37"
     assert results['file'] == "/etc/httpd/modsecurity.d/owasp-modsecurity-crs/base_rules/modsecurity_crs_40_generic_attacks.conf"
     assert results['msg'] == "Meta-Character Anomaly Detection Alert - Repetative Non-Word Characters", "invalid msg, was: %r" % results["message"]
-    
     
 # test with example from https://github.com/SpiderLabs/ModSecurity/wiki/ModSecurity-2-Data-Formats#Audit_Log_Header_code_classliteralAcode
 def test_parse_part_A_timestamp():
@@ -73,6 +70,6 @@ def test_parse_incident_with_H_record():
     incident = parse_incident(session, result[0], result[1], include_parts=True)
 
     expected_ids = sorted([960024, 981203])
-    found_ids = sorted(map(lambda i: i.incident_catalog.catalog_id, incident.details))
+    found_ids = sorted([i.incident_catalog.catalog_id for i in incident.details])
 
     assert found_ids == expected_ids

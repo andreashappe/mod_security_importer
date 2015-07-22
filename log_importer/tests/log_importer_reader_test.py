@@ -1,4 +1,3 @@
-from nose.tools import *
 from log_importer.log_import.reader import read_file
 
 import log_importer

@@ -1,29 +1,20 @@
-from nose.tools import *
-
-import log_importer
 from log_importer.data.objects import Destination
-from log_importer.data.manager import setup_connection
-
-def setup():
-    print "SETUP!"
-
-def teardown():
-    print "TEAR DOWN!"
-
-def test_basic():
-    print "I RAN!"
+from log_importer.data.db_helper import setup_connection
 
 def test_create_inmemory_db():
+    """ a simple in-memory database-initialization should work """
     setup_connection(create_db=True)
 
 def test_insert_and_query():
-    s = setup_connection(create_db=True)
+    """ data commited to the database should be readable afterwards"""
+    session = setup_connection(create_db=True)
 
-    e = Destination(ip='127.0.0.1', port=80)
-    s.add(e)
-    s.commit()
+    destination = Destination(ip='127.0.0.1', port=80)
+    session.add(destination)
+    session.commit()
 
-    result = s.query(Destination).filter(Destination.ip == '127.0.0.1').all()
-    print result
+    result = session.query(Destination).filter(Destination.ip == '127.0.0.1').all()
 
-    s.close()
+    assert result[0].ip == destination.ip
+
+    session.close()

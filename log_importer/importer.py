@@ -1,11 +1,8 @@
 import argparse
 
-import log_importer
-import log_importer.log_import
-
 from log_importer.log_import.parser import parse_incident
 from log_importer.log_import.reader import read_from_file
-from log_importer.data.manager import setup_connection
+from log_importer.data.db_helper import setup_connection
 
 def main():
     parser = argparse.ArgumentParser(description="Import Log-Files into Database.")

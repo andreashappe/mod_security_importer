@@ -1,12 +1,7 @@
 import argparse
 
-import log_importer
-import log_importer.log_import
-
-from log_importer.log_import.parser import parse_incident
-from log_importer.log_import.reader import read_from_file
-from log_importer.data.manager import setup_connection
-from log_importer.data.objects import *
+from log_importer.data.db_helper import setup_connection
+from log_importer.data.objects import Incident
 
 def main():
     parser = argparse.ArgumentParser(description="Give an high-level overview of database.")

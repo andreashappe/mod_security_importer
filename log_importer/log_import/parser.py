@@ -7,11 +7,11 @@ from string import split
 # this is renamed to urllib.parse in python3
 from urlparse import urlparse
 
-from log_importer.data.objects import *
+from log_importer.data.objects import Incident, IncidentCatalogEntry, IncidentDetail, Source, Destination, Part
 from log_importer.data.db_helper import get_or_create
 
 def parse_part_A(part):
-    matcher = re.match("^\[([^\]]+)\] ([^ ]+) ([^ ]+) ([^ ]+) ([^ ]+) ([^ ]+)\r\n$", part)
+    matcher = re.match(r"^\[([^\]]+)\] ([^ ]+) ([^ ]+) ([^ ]+) ([^ ]+) ([^ ]+)\r\n$", part)
     assert matcher
 
     # time parsing is locale dependent. Assume that it is always the same
@@ -29,7 +29,7 @@ def parse_part_A(part):
 
 def parse_H_detail_message(msg):
     result = {}
-    for i in map(lambda x: split(x, ' ', 1), re.findall("\[([^\]]*)\]", msg)):
+    for i in [split(x, ' ', 1) for x in re.findall(r"\[([^\]]*)\]", msg)]:
         if len(i) == 2:
             key = i[0].strip()
             value = i[1].strip("\"")
@@ -44,7 +44,7 @@ def parse_part_H(session, part):
 
     messages = []
 
-    for i in map(lambda x: split(x, ':', 1), part):
+    for i in [split(x, ':', 1) for x in part]:
         if i[0] == "Message":
             messages.append(IncidentDetail(incident_catalog=get_incident_catalog_entry_for(session, i[1])))
 
@@ -58,7 +58,7 @@ def parse_part_B(parts):
         method = matcher.group(1).strip()
         path = urlparse(matcher.group(2)).path
 
-    for i in map(lambda x: split(x, ':', 1), parts):
+    for i in [split(x, ':', 1) for x in parts]:
         if i[0] == "Host":
             host = i[1].strip()
 
@@ -87,6 +87,6 @@ def parse_incident(session, fragment_id, parts, include_parts=False):
 
     # import details from 'H' part (if exists)
     if 'H' in parts:
-        map(lambda i: incident.details.append(i), parse_part_H(session, parts['H']))
+        [incident.details.append(i) for i in parse_part_H(session, parts['H'])]
 
     return incident
