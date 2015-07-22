@@ -13,16 +13,16 @@ def common_data(i, incident):
     assert i.fragment_id == '7cf8df3f'
     assert i.timestamp == datetime.datetime(2015, 3, 30, 21, 10, 38),\
             "timestamp is: %r" % incident.timestamp # should be in UTC
-    assert i.unique_id == 'VRm7zgr5AlMAAClwIZoAAAAU'
-    assert i.source.ip == '10.199.23.1'
+    assert i.unique_id == u'VRm7zgr5AlMAAClwIZoAAAAU'
+    assert i.source.ip == u'10.199.23.1'
     assert i.source.port == 40889
-    assert i.destination.ip == '1.2.3.4'
+    assert i.destination.ip == u'1.2.3.4'
     assert i.destination.port == 18060
-    assert i.host == "somehostname.at",\
+    assert i.host == u"somehostname.at",\
                     "unexpected host, was: %r" % incident.host
-    assert i.path == "/fubar/sr/10/SomeAction.do",\
-                    "invalid path, was:%r" %incident.path
-    assert i.method == "GET",\
+    assert i.path == u"/fubar/sr/10/SomeAction.do",\
+                    "invalid path, was:%r" % incident.path
+    assert i.method == u"GET",\
                     "unexpected HTTP method, was: %r" % incident.method
 
     expected_ids = sorted([960024, 981203])

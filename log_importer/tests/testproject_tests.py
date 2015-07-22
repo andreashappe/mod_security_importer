@@ -9,11 +9,11 @@ def test_insert_and_query():
     """ data commited to the database should be readable afterwards"""
     session = setup_connection(create_db=True)
 
-    destination = Destination(ip='127.0.0.1', port=80)
+    destination = Destination(ip=u'127.0.0.1', port=80)
     session.add(destination)
     session.commit()
 
-    result = session.query(Destination).filter(Destination.ip == '127.0.0.1').all()
+    result = session.query(Destination).filter(Destination.ip == u'127.0.0.1').all()
 
     assert result[0].ip == destination.ip
 

@@ -1,3 +1,4 @@
+import io
 import re
 
 def read_from_file(f):
@@ -48,5 +49,5 @@ def read_file(path):
     """read a file (given by the path parameter) and return it's
        contents in a tupel (fragment_id, {part_category: part})
     """
-    with open(path, 'r') as source:
+    with io.open(path, 'r') as source:
         return read_from_file(source)

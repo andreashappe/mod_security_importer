@@ -1,33 +1,26 @@
 """ This module converts the string representation of an incident into
     a python (or rather sqlalchemy) object. """
 
+# urllib.parse in python2/3
+from future.standard_library import install_aliases
+install_aliases()
+
 import re
-import locale
 import datetime
 
-from string import split
-
-# this is renamed to urllib.parse in python3
-from urlparse import urlparse
-
+from urllib.parse import urlparse
 from log_importer.data.objects import Incident, IncidentCatalogEntry,\
                                       IncidentDetail, Source,\
                                       Destination, Part
 from log_importer.data.db_helper import get_or_create
 
-REGEXP_PART_A = r"^\[([^\]]+)\] ([^ ]+) ([^ ]+) ([^ ]+) ([^ ]+) ([^ ]+)\r\n$"
+REGEXP_PART_A = '^\[([^\]]+)\] ([^ ]+) ([^ ]+) ([^ ]+) ([^ ]+) ([^ ]+)\n$'
 
 def date_parser(match_group):
     """ manually convert timestamp into UTC. Python's strptime function cannot
         handle +0000 (which is somehow not mentioned in the documentation).
         python-dateutil cannot handle the custom mod_security timestamp format
-
-
-        time parsing is locale dependent. Assume that it is always the same
-        as on my desktop
     """
-
-    assert locale.getlocale() == (None, None)
 
     parts = match_group.split()
     time = datetime.datetime.strptime(parts[1], "+%H%M")
@@ -48,7 +41,7 @@ def parse_part_A(part):
 
 def parse_H_detail_message(msg):
     result = {}
-    for i in [split(x, ' ', 1) for x in re.findall(r"\[([^\]]*)\]", msg)]:
+    for i in [x.split(' ', 1) for x in re.findall(r"\[([^\]]*)\]", msg)]:
         if len(i) == 2:
             key = i[0].strip()
             value = i[1].strip("\"")
@@ -66,7 +59,7 @@ def parse_part_H(session, part):
 
     messages = []
 
-    for i in [split(x, ':', 1) for x in part]:
+    for i in [x.split(':', 1) for x in part]:
         if i[0] == "Message":
             messages.append(IncidentDetail(incident_catalog=get_incident_catalog_entry_for(session, i[1])))
 
@@ -74,13 +67,16 @@ def parse_part_H(session, part):
 
 def parse_part_B(parts):
     # check if we start with GET/etc. Request
-    matcher = re.match("^([^ ]+) (.*)\r\n$", parts[0])
+    matcher = re.match("^([^ ]+) (.*)\n$", parts[0])
 
     if matcher:
         method = matcher.group(1).strip()
         path = urlparse(matcher.group(2)).path
+    else:
+        method = None
+        path = None
 
-    for i in [split(x, ':', 1) for x in parts]:
+    for i in [x.split(':', 1) for x in parts]:
         if i[0] == "Host":
             host = i[1].strip()
 

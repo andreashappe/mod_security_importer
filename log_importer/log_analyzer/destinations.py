@@ -36,7 +36,7 @@ def output_destinations():
 
     # show all incidences
     for ipaddress, port, msg, cnt in retrieve_data(session):
-        print "%3d: %s:%5d %s" % (cnt, ipaddress, port, msg)
+        print("%3d: %s:%5d %s" % (cnt, ipaddress, port, msg))
 
     # close database
     session.close()
