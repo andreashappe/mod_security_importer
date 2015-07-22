@@ -1,10 +1,21 @@
-import argparse
+""" just outputs a (formatted) dump of the original data """
 
+import argparse
 from log_importer.data.db_helper import setup_connection
 from log_importer.data.objects import Incident
 
-def main():
-    parser = argparse.ArgumentParser(description="Give an high-level overview of database.")
+def output_details(incident, detail):
+    """ outputs a single line (describing one incident) """
+    print "%s %s:%s -> %s %s:%s%s: %s" % (\
+            incident.timestamp.strftime("%Y/%m/%d %H:%M%S"),
+            incident.source.ip, incident.source.port,
+            incident.method, incident.destination.ip, incident.destination.port,
+            incident.path, detail.incident_catalog.message)
+
+def output_overview():
+    """ just outputs a (formatted) dump of the original data """
+    parser = argparse.ArgumentParser(\
+                        description="Give an high-level overview of database.")
     parser.add_argument('database', help="Database to analyze")
 
     args = parser.parse_args()
@@ -13,11 +24,9 @@ def main():
     session = setup_connection(create_db=False, path=args.database)
 
     # show all incidences
-    for i in session.query(Incident).all():
-        for m in i.details:
-            print "%s %s:%s -> %s %s:%s%s: %s" % (i.timestamp.strftime("%Y/%m/%d %H:%M%S"), i.source.ip, i.source.port, i.method, i.destination.ip, i.destination.port, i.path, m.incident_catalog.message)
+    for incident in session.query(Incident).all():
+        for detail in incident.details:
+            output_details(incident, detail)
 
     # close database
     session.close()
-
-main()

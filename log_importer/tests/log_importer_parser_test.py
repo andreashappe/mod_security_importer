@@ -1,15 +1,23 @@
-from log_importer.log_import.parser import parse_incident, parse_part_A, parse_H_detail_message
+""" tests if the string representation of an incident report can
+    be transformed in a "real" python object representation.
+
+    All test data from https://github.com/SpiderLabs/ModSecurity/wiki/ModSecurity-2-Data-Formats#Audit_Log_Header_code_classliteralAcode
+    """
+
+from log_importer.log_import.parser import parse_incident, parse_part_A,\
+                                           parse_H_detail_message
 from log_importer.log_import.reader import read_file
 from log_importer.data.db_helper import setup_connection
 
 import datetime
 
-# test with example from https://github.com/SpiderLabs/ModSecurity/wiki/ModSecurity-2-Data-Formats#Audit_Log_Header_code_classliteralAcode
-def test_parse_part_A():
-    part = "[09/Jan/2008:12:27:56 +0000] OSD4l1BEUOkAAHZ8Y3QAAAAH 209.90.77.54 64995 80.68.80.233 80\r\n"
-    result = parse_part_A(part)
+PART_A = "[09/Jan/2008:12:27:56 +0000] OSD4l1BEUOkAAHZ8Y3QAAAAH"\
+         " 209.90.77.54 64995 80.68.80.233 80\r\n"
 
-    # test if the right data was detected
+def test_parse_part_A():
+    """ test if the right data was detected """
+
+    result = parse_part_A(PART_A)
 
     assert result, "unexpected result %r" % result
     # time-parsing is a test-case on it's own
@@ -28,12 +36,11 @@ def test_parse_H_message():
     assert results['file'] == "/etc/httpd/modsecurity.d/owasp-modsecurity-crs/base_rules/modsecurity_crs_40_generic_attacks.conf"
     assert results['msg'] == "Meta-Character Anomaly Detection Alert - Repetative Non-Word Characters", "invalid msg, was: %r" % results["message"]
     
-# test with example from https://github.com/SpiderLabs/ModSecurity/wiki/ModSecurity-2-Data-Formats#Audit_Log_Header_code_classliteralAcode
 def test_parse_part_A_timestamp():
-    part = "[09/Jan/2008:12:27:56 +0000] OSD4l1BEUOkAAHZ8Y3QAAAAH 209.90.77.54 64995 80.68.80.233 80\r\n"
-    result = parse_part_A(part)
+    """ test if the right data was detected """
 
-    # test if the right data was detected
+    result = parse_part_A(PART_A)
+
     assert result[0] == datetime.datetime(2008, 1, 9, 12, 27, 56)
 
 def test_parse_incident():

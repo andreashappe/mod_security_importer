@@ -1,8 +1,11 @@
+""" tests if incident files can be read and transformed into their
+    string representation. """
+
 from log_importer.log_import.reader import read_file
 
-import log_importer
-
 def test_read_sample_file_fragment_id():
+    """ the correct fragment id is part of the string representation. """
+
     result = read_file('log_importer/tests/test_files/file_read_test.txt')
 
     # test if the right fragment_id was detected
@@ -12,7 +15,8 @@ def test_read_sample_file_part_categories():
     result = read_file('log_importer/tests/test_files/file_read_test.txt')
 
     # test if the right parts were detected
-    assert sorted(result[1].keys()) == sorted(('A', 'B', 'F', 'E', 'H', 'Z')), "unexpected keys %r" % result[1].keys()
+    assert sorted(result[1].keys()) == sorted(('A', 'B', 'F', 'E', 'H', 'Z')),\
+                                    "unexpected keys %r" % result[1].keys()
 
 def test_read_sample_file_part_content_A():
     result = read_file('log_importer/tests/test_files/file_read_test.txt')

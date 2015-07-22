@@ -1,3 +1,5 @@
 #!/usr/bin/env python
 
-from log_importer import importer
+from log_importer.importer import import_log_to_database
+
+import_log_to_database()

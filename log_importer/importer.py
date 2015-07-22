@@ -4,7 +4,7 @@ from log_importer.log_import.parser import parse_incident
 from log_importer.log_import.reader import read_from_file
 from log_importer.data.db_helper import setup_connection
 
-def main():
+def import_log_to_database():
     parser = argparse.ArgumentParser(description="Import Log-Files into Database.")
     parser.add_argument('database', help="Database to import to")
     parser.add_argument('files', metavar='File', type=file, nargs='+')
@@ -32,5 +32,3 @@ def main():
 
     # close database
     session.close()
-
-main()
