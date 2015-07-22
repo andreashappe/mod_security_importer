@@ -1,4 +1,5 @@
-# mod\_security Log Importer
+# mod\_security Log Importer [![Build Status](https://api.travis-ci.org/andreashappe/mod_security_importer.svg?branch=master)](https://travis-ci.org/andreashappe/mod_security_importer.svg?branch=master)
+
 
 This tool is intended to import mod\_security's incident logs into one or more
 database. Multiple simple analysis tool will try to extract data to support
