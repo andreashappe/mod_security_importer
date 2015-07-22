@@ -1,0 +1,38 @@
+--7cf8df3f-A--
+[30/Mar/2015:23:10:38 +0200] VRm7zgr5AlMAAClwIZoAAAAU 10.199.23.1 40889 1.2.3.4 18060
+--7cf8df3f-B--
+GET /fubar/sr/10/SomeAction.do?keyword=%D0%9C%D0%B8%D0%BD%D0%B8%D1%81%D1%82%D0%B0%D1%80%D1%81%D1%82%D0%B2%D0%BE+%D0%B7%D0%B0+%D0%BE%D0%B1%D1%80%D0%B0%D0%B7%D0%BE%D0%B2%D0%B0%D1%9A%D0%B5&senseid=23 HTTP/1.1
+User-Agent: Mozilla/5.0 (compatible; AhrefsBot/5.0; +http://ahrefs.com/robot/)
+Accept: */*
+Accept-Encoding: deflate, gzip
+Host: somehostname.at
+x-orig-addr: 1.2.3.4
+X-Forwarded-For: 6.5.4.3
+
+--7cf8df3f-F--
+HTTP/1.1 200 OK
+X-FRAME-OPTION: SAMEORIGIN
+Content-Security-Policy: default-src 'self'; style-src 'self' 'unsafe-inline'; object-src 'none'
+X-Content-Security-Policy: default-src 'self'; style-src 'self' 'unsafe-inline'; object-src 'none'
+X-Webkit-CSP: default-src 'self'; style-src 'self' 'unsafe-inline'; object-src 'none'
+Expires: Mon, 30 Mar 2015 21:15:33 GMT
+Cache-Control: public, max-age=300
+Content-Type: text/html;charset=UTF-8
+Vary: Accept-Encoding
+Transfer-Encoding: chunked
+
+--7cf8df3f-E--
+
+--7cf8df3f-H--
+Message:  [file "/etc/httpd/modsecurity.d/owasp-modsecurity-crs/base_rules/modsecurity_crs_40_generic_attacks.conf"] [line "37"] [id "960024"] [rev "2"] [msg "Meta-Character Anomaly Detection Alert - Repetative Non-Word Characters"] [data "Matched Data: \xd0\x9c\xd0\xb8\xd0\xbd\xd0\xb8\xd1\x81\xd1\x82\xd0\xb0\xd1\x80\xd1\x81\xd1\x82\xd0\xb2\xd0\xbe \xd0\xb7\xd0\xb0 \xd0\xbe\xd0\xb1\xd1\x80\xd0\xb0\xd0\xb7\xd0\xbe\xd0\xb2\xd0\xb0\xd1\x9a\xd0\xb5 found within ARGS:keyword: \xd0\x9c\xd0\xb8\xd0\xbd\xd0\xb8\xd1\x81\xd1\x82\xd0\xb0\xd1\x80\xd1\x81\xd1\x82\xd0\xb2\xd0\xbe \xd0\xb7\xd0\xb0 \xd0\xbe\xd0\xb1\xd1\x80\xd0\xb0\xd0\xb7\xd0\xbe\xd0\xb2\xd0\xb0\xd1\x9a\xd0\xb5"] [ver "OWASP_CRS/2.2.8"] [maturity "9"] [accuracy "8"] Warning. Pattern match "\\W{4,}" at ARGS:keyword.
+Message:  [file "/etc/httpd/modsecurity.d/owasp-modsecurity-crs/base_rules/modsecurity_crs_60_correlation.conf"] [line "33"] [id "981203"] [msg "Inbound Anomaly Score (Total Inbound Score: 3, SQLi=0, XSS=0): Meta-Character Anomaly Detection Alert - Repetative Non-Word Characters"] Warning. Operator LT matched 5 at TX:inbound_anomaly_score.
+Apache-Handler: proxy-server
+Stopwatch: 1427749838127522 211425 (- - -)
+Stopwatch2: 1427749838127522 211425; combined=2163, p1=223, p2=1757, p3=2, p4=10, p5=170, sr=46, sw=1, l=0, gc=0
+Response-Body-Transformed: Dechunked
+WAF: ModSecurity for Apache/2.7.7 (http://www.modsecurity.org/); OWASP_CRS/2.2.8.
+Server: Apache
+Sanitised-Request-Headers: "Authorization", "X-rhn-auth".
+Engine-Mode: "DETECTION_ONLY"
+
+--7cf8df3f-Z--
