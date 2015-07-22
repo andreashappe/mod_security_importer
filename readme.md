@@ -1,3 +1,12 @@
+# mod\_security Log Importer
+
+This tool is intended to import mod\_security's incident logs into one or more
+database. Multiple simple analysis tool will try to extract data to support
+ongoing support work on the deployed mod\_security rule set.
+
+I haven't written Python code in a couple of months, so please cope with
+included rubyisms.
+
 # setup
 
 1. repository auschecken
