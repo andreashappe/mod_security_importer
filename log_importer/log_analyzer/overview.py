@@ -6,8 +6,9 @@ from log_importer.data.objects import Incident
 
 def output_details(incident, detail):
     """ outputs a single line (describing one incident) """
-    print("%s %s:%s -> %s %s:%s%s: %s" % (\
+    print("%s %s %s:%s -> %s %s:%s%s: %s" % (\
             incident.timestamp.strftime("%Y/%m/%d %H:%M%S"),
+            incident.unique_id,
             incident.source.ip, incident.source.port,
             incident.method, incident.destination.ip, incident.destination.port,
             incident.path, detail.incident_catalog.message))
