@@ -1,0 +1,5 @@
+#!/usr/bin/env python
+
+from log_importer.log_analyzer.lister import output_incident_types
+
+output_incident_types()
