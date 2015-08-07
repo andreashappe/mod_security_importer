@@ -119,4 +119,7 @@ def parse_incident(session, fragment_id, parts, include_parts=False):
     if 'H' in parts:
         incident.details = parse_part_H(session, parts['H'])
 
+    if 'F' in parts:
+        incident.http_code = parts['F'][0].strip()
+
     return incident

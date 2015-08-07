@@ -41,6 +41,7 @@ class Incident(BASE):
     timestamp = Column(DateTime)
     fragment_id = Column(String)
     unique_id = Column(String)
+    http_code = Column(String)
 
     destination_id = Column(Integer, ForeignKey(Destination.id))
     destination = relationship(Destination)
