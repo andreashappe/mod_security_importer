@@ -50,10 +50,13 @@ def parse_H_detail_message(msg):
 
 def get_incident_catalog_entry_for(session, msg):
     parsed = parse_H_detail_message(msg)
-    return get_or_create(session, IncidentCatalogEntry, message=parsed['msg'],
-                         config_file=parsed['file'],
-                         catalog_id=int(parsed['id']),
-                         config_line=int(parsed['line']))
+    if 'msg' in parsed.keys():
+        return get_or_create(session, IncidentCatalogEntry, message=parsed['msg'],
+                             config_file=parsed['file'],
+                             catalog_id=int(parsed['id']),
+                             config_line=int(parsed['line']))
+    else:
+        print("WARN: could not parse message: %s" % (msg))
 
 def parse_part_H(session, part):
 
@@ -61,8 +64,9 @@ def parse_part_H(session, part):
 
     for i in [x.split(':', 1) for x in part]:
         if i[0] == "Message":
-            messages.append(IncidentDetail(incident_catalog=get_incident_catalog_entry_for(session, i[1])))
-
+            catalog = get_incident_catalog_entry_for(session, i[1])
+            if catalog != None:
+                messages.append(IncidentDetail(incident_catalog=catalog))
     return messages
 
 def parse_part_B(parts):

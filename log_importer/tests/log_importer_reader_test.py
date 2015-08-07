@@ -23,3 +23,6 @@ def test_read_sample_file_part_content_A():
 
     # just test a simple example
     assert result[1]['A'][0] == u"[30/Mar/2015:23:10:38 +0200] VRm7zgr5AlMAAClwIZoAAAAU 10.199.23.1 40889 1.2.3.4 18060\n", "unexpected result %r" % result[1]['A'][0]
+
+def test_should_not_fail_with_file_including_error():
+    result = read_file('log_importer/tests/test_files/file_read_with_error.txt')

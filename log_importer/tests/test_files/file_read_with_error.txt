@@ -1,0 +1,65 @@
+--a7e9b515-A--
+[13/Apr/2015:02:33:58 +0200] VSsO9gr5AlQAAE5ZXKkAAAMB 10.199.23.1 54102 10.199.21.14 38310
+--a7e9b515-B--
+PROPFIND /remote.php/webdav/ HTTP/1.1
+Depth: 1
+Authorization: **********************************
+User-Agent: Mozilla/5.0 (Windows) mirall/1.8.0
+Content-Type: text/xml; charset=utf-8
+Cookie: ocf09bf3a0de=g42reg9g48sjldmgenvh65jqq4
+Content-Length: 291
+Connection: Keep-Alive
+Accept-Encoding: gzip, deflate
+Accept-Language: de-AT,en,*
+Host: abc.de
+
+--a7e9b515-C--
+<?xml version="1.0" ?>
+<d:propfind xmlns:d="DAV:" xmlns:oc="http://owncloud.org/ns">
+  <d:prop>
+    <d:resourcetype />
+    <d:getlastmodified />
+    <d:getcontentlength />
+    <d:getetag />
+    <oc:id />
+    <oc:downloadURL />
+    <oc:dDC />
+    <oc:permissions />
+  </d:prop>
+</d:propfind>
+
+--a7e9b515-F--
+HTTP/1.1 207 Multi-Status
+Expires: Thu, 19 Nov 1981 08:52:00 GMT
+Cache-Control: no-store, no-cache, must-revalidate, post-check=0, pre-check=0
+Pragma: no-cache
+Strict-Transport-Security: max-age=31536000
+X-XSS-Protection: 1; mode=block
+X-Content-Type-Options: nosniff
+X-Frame-Options: Sameorigin
+Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; frame-src *; img-src *; font-src 'self' data:; media-src *; connect-src *
+X-Robots-Tag: none
+Vary: Brief,Prefer
+DAV: 1, 3, extended-mkcol, 2
+Content-Length: 2810
+nnCoection: close
+Content-Type: application/xml; charset=utf-8
+Keep-Alive: timeout=15, max=300
+Connection: Keep-Alive
+
+--a7e9b515-E--
+
+--a7e9b515-H--
+Message:  [file "/etc/httpd/modsecurity.d/owasp-modsecurity-crs/base_rules/modsecurity_crs_30_http_policy.conf"] [line "31"] [id "960032"] [rev "2"] [msg "Method is not allowed by policy"] [data "PROPFIND"] [severity "CRITICAL"] [ver "OWASP_CRS/2.2.8"] [maturity "9"] [accuracy "9"] [tag "OWASP_CRS/POLICY/METHOD_NOT_ALLOWED"] [tag "WASCTC/WASC-15"] [tag "OWASP_TOP_10/A6"] [tag "OWASP_AppSensor/RE1"] [tag "PCI/12.1"] Warning. Match of "within %{tx.allowed_methods}" against "REQUEST_METHOD" required.
+Message: Rule 7fdb1ad64530 [id "981247"][file "/etc/httpd/modsecurity.d/owasp-modsecurity-crs/base_rules/modsecurity_crs_41_sql_injection_attacks.conf"][line "243"] - Execution error - PCRE limits exceeded (-8): (null).
+Message:  [file "/etc/httpd/modsecurity.d/owasp-modsecurity-crs/base_rules/modsecurity_crs_60_correlation.conf"] [line "33"] [id "981203"] [msg "Inbound Anomaly Score (Total Inbound Score: 3, SQLi=0, XSS=0): Method is not allowed by policy"] Warning. Operator LT matched 5 at TX:inbound_anomaly_score.
+Apache-Handler: proxy-server
+Stopwatch: 1428885238040623 85715 (- - -)
+Stopwatch2: 1428885238040623 85715; combined=2609, p1=301, p2=2246, p3=1, p4=4, p5=57, sr=49, sw=0, l=0, gc=0
+Response-Body-Transformed: Dechunked
+WAF: ModSecurity for Apache/2.7.7 (http://www.modsecurity.org/); OWASP_CRS/2.2.8.
+Server: Apache
+Sanitised-Request-Headers: "Authorization", "X-rhn-auth".
+Engine-Mode: "DETECTION_ONLY"
+
+--a7e9b515-Z--
