@@ -2,8 +2,8 @@ import argparse
 
 from sqlalchemy import func, desc
 from log_importer.data.db_helper import setup_connection
-from log_importer.data.objects import Destination, IncidentCatalogEntry,\
-                                      IncidentDetail, Incident
+from log_importer.data.objects import IncidentCatalogEntry
+
 
 def retrieve_data(session):
     """ gets raw output data from the database """

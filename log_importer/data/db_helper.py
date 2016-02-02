@@ -6,8 +6,10 @@ from sqlalchemy.ext.declarative import declarative_base
 
 Base = declarative_base()
 
+
 def get_base():
     return Base
+
 
 def setup_connection(create_db=False, path=''):
     """ creates a new sqlite database connection. If path is
@@ -25,6 +27,7 @@ def setup_connection(create_db=False, path=''):
         Base.metadata.create_all(engine)
 
     return session()
+
 
 def get_or_create(session, model, **kwargs):
     """ analogous to ActiveRecord's find_or_create_by: test for

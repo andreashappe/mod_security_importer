@@ -1,6 +1,7 @@
 import io
 import re
 
+
 def read_from_file(f):
     fragment_id = None
     parts = {}
@@ -8,7 +9,7 @@ def read_from_file(f):
     current_part_buffer = []
 
     for line in f:
-        matcher = re.match('--([^-]+)-([ABCDEFGHIJKZ])--', line)
+        matcher = re.match(r'--([^-]+)-([ABCDEFGHIJKZ])--', line)
 
         if matcher:  # beginning of new part
 
@@ -43,7 +44,8 @@ def read_from_file(f):
     # without an A part log information is too lacking
     assert 'A' in parts
 
-    return (fragment_id, parts)
+    return fragment_id, parts
+
 
 def read_file(path):
     """read a file (given by the path parameter) and return it's

@@ -16,6 +16,7 @@ from log_importer.data.db_helper import get_or_create
 
 REGEXP_PART_A = '^\[([^\]]+)\] ([^ ]+) ([^ ]+) ([^ ]+) ([^ ]+) ([^ ]+)\n$'
 
+
 def date_parser(match_group):
     """ manually convert timestamp into UTC. Python's strptime function cannot
         handle +0000 (which is somehow not mentioned in the documentation).
@@ -27,6 +28,7 @@ def date_parser(match_group):
     return datetime.datetime.strptime(parts[0], "%d/%b/%Y:%H:%M:%S") -\
                 datetime.timedelta(hours=time.hour, minutes=time.minute)
 
+
 def parse_part_A(part):
     """ Part A contains timestamp, id, destination and source information """
 
@@ -35,9 +37,10 @@ def parse_part_A(part):
 
     timestamp = date_parser(matcher.group(1))
 
-    return (timestamp, matcher.group(2),\
-            matcher.group(3), int(matcher.group(4)),\
+    return (timestamp, matcher.group(2),
+            matcher.group(3), int(matcher.group(4)),
             matcher.group(5), int(matcher.group(6)))
+
 
 def parse_H_detail_message(msg):
     result = {}
@@ -47,6 +50,7 @@ def parse_H_detail_message(msg):
             value = i[1].strip("\"")
             result[key] = value
     return result
+
 
 def get_incident_catalog_entry_for(session, msg):
     parsed = parse_H_detail_message(msg)
@@ -58,6 +62,7 @@ def get_incident_catalog_entry_for(session, msg):
     else:
         print("WARN: could not parse message: %s" % (msg))
 
+
 def parse_part_H(session, part):
 
     messages = []
@@ -65,13 +70,14 @@ def parse_part_H(session, part):
     for i in [x.split(':', 1) for x in part]:
         if i[0] == "Message":
             catalog = get_incident_catalog_entry_for(session, i[1])
-            if catalog != None:
+            if catalog is not None:
                 messages.append(IncidentDetail(incident_catalog=catalog))
     return messages
 
+
 def parse_part_B(parts):
     # check if we start with GET/etc. Request
-    matcher = re.match("^([^ ]+) (.*)\n$", parts[0])
+    matcher = re.match(r'^([^ ]+) (.*)\n$', parts[0])
 
     if matcher:
         method = matcher.group(1).strip()
@@ -86,6 +92,7 @@ def parse_part_B(parts):
 
     return host, method, path
 
+
 def parse_incident(session, fragment_id, parts, include_parts=False):
 
     """ takes (string) parts of an incident and converts those into
@@ -98,11 +105,11 @@ def parse_incident(session, fragment_id, parts, include_parts=False):
     incident = Incident(fragment_id=fragment_id,
                         timestamp=result_A[0],
                         unique_id=result_A[1],
-                        destination=get_or_create(session, Destination,\
-                                                  ip=result_A[4],\
+                        destination=get_or_create(session, Destination,
+                                                  ip=result_A[4],
                                                   port=result_A[5]),
-                        source=get_or_create(session, Source,\
-                                             ip=result_A[2],\
+                        source=get_or_create(session, Source,
+                                             ip=result_A[2],
                                              port=result_A[3])
                        )
     # import parts
