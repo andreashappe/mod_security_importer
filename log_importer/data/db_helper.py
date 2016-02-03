@@ -13,16 +13,12 @@ def get_base():
 
 def engine_from_path(path):
     if not path:
-	print "creating in-memory"
         engine = create_engine('sqlite://')
     elif "://" not in path:
-	print "creating from file"
         engine = create_engine('sqlite:///' + path)
     else:
-	print "creating from db"
         engine = create_engine(path)
 
-    print "return engine"
     return engine
 
 
