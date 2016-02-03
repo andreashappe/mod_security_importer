@@ -17,6 +17,13 @@ included rubyisms.
 
 (requirements are mostly down to sqlalchemy and noste)
 
+## if using postgres, create a database
+
+CREATE USER modsec WITH PASSWORD 'modsec';
+CREATE DATABASE modsec;
+GRANT ALL PRIVILEGES ON DATABASE modsec to modsec;
+\q 
+
 # run tests
 
 ~~~ bash

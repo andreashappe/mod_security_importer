@@ -11,15 +11,28 @@ def get_base():
     return Base
 
 
+def engine_from_path(path):
+    if not path:
+	print "creating in-memory"
+        engine = create_engine('sqlite://')
+    elif "://" not in path:
+	print "creating from file"
+        engine = create_engine('sqlite:///' + path)
+    else:
+	print "creating from db"
+        engine = create_engine(path)
+
+    print "return engine"
+    return engine
+
+
 def setup_connection(create_db=False, path=''):
     """ creates a new sqlite database connection. If path is
         empty (or a empty string is given) an in-memory
-        database is created """
+        database is created. Path accepts any sqlalchemy
+        connection string. """
 
-    if len(path) > 0:
-        engine = create_engine('sqlite:///' + path)
-    else:
-        engine = create_engine('sqlite://')
+    engine = engine_from_path(path)
     session = sessionmaker()
     session.configure(bind=engine)
 

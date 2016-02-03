@@ -7,20 +7,25 @@ from log_importer.data.db_helper import setup_connection
 from multiprocessing import Process, cpu_count, Queue
 
 
-def import_worker(jobs, session, import_parts):
+def import_worker(jobs, database, import_parts):
+    """have to open a new database connection as we're in a new process"""
 
-    f = jobs.get()
+    session = setup_connection(create_db=True, path=database)
+
+    name = jobs.get()
+    f = open(name, 'r')
     while f is not None:
         print("parsing " + f.name)
         tmp = read_from_file(f)
 
-        incident = parse_incident(session, tmp[0], tmp[1], include_parts=args.import_parts)
-
+        incident = parse_incident(session, tmp[0], tmp[1], include_parts=import_parts)
         print("adding " + f.name + " to db")
         session.add(incident)
         session.commit()
+        f = jobs.get()
 
-	f = jobs.get()
+    session.commit()
+    session.close()
 
 
 def import_log_to_database():
@@ -36,22 +41,27 @@ def import_log_to_database():
     else:
         print("not adding parts")
 
-    # open database
+    # open database to calculate num_worker
     session = setup_connection(create_db=True, path=args.database)
 
     # WIP: add a minimal multiprocessing implementation
     jobs = Queue()
     workers = []
-    num_workers = 1 # TODO: allow for multiple workers (db-depenedent)
+
+    # only allow mulitple workers for postgres backend
+    if session.connection().engine.name == 'postgresql':
+    	num_workers = cpu_count()
+    else:
+        num_workers = 1
 
     for w in range(num_workers):
-        p = Process(target=import_worker, args=(jobs, session, args.import_parts))
+        p = Process(target=import_worker, args=(jobs, args.database, args.import_parts))
         p.start()
         workers.append(p)
 
     # add files
     for f in args.files:
-        jobs.put(f)
+        jobs.put(f.name)
 
     # add stop bit
     for i in range(num_workers):
