@@ -1,31 +1,47 @@
 import argparse
+import multiprocessing
 
 from log_importer.log_import.parser import parse_incident
 from log_importer.log_import.reader import read_from_file
 from log_importer.data.db_helper import setup_connection
+from log_importer.data.db_helper import get_or_create
+from log_importer.data.objects import *
 
-from multiprocessing import Process, cpu_count, Queue
+from multiprocessing import Pool, cpu_count
 
 
-def import_worker(jobs, database, import_parts):
-    """have to open a new database connection as we're in a new process"""
+def forward_to_db(session, i):
+    incident = Incident(fragment_id=i['fragment_id'],
+                        timestamp=i['timestamp'],
+                        unique_id=i['unique_id'],
+                        destination=get_or_create(session, Destination,
+                                                  ip=i['destination'][0],
+                                                  port=i['destination'][1]),
+                        source=get_or_create(session, Source,
+                                                  ip=i['source'][0],
+                                                  port=i['source'][1]),
+                        host=i['host'],
+                        method=i['method'],
+                        path=i['path'],
+                        http_code=i['http_code']
+                        )
+    for p in i['parts']:
+        incident.parts.append(p)
 
-    session = setup_connection(create_db=True, path=database)
+    for p in i['details']:
+        if 'msg' in p.keys():
+            entry = get_or_create(session, IncidentCatalogEntry,
+                                  message=p['msg'],
+                                  config_file=p['file'],
+                                  catalog_id=int(p['id']),
+                                  config_line=int(p['line']))
+            
+            incident.details.append(IncidentDetail(incident_catalog=entry))
 
-    name = jobs.get()
-    f = open(name, 'r')
-    while f is not None:
-        print("parsing " + f.name)
-        tmp = read_from_file(f)
-
-        incident = parse_incident(session, tmp[0], tmp[1], include_parts=import_parts)
-        print("adding " + f.name + " to db")
-        session.add(incident)
-        session.commit()
-        f = jobs.get()
-
+    session.add(incident)
     session.commit()
-    session.close()
+
+    return incident
 
 
 def import_log_to_database():
@@ -44,32 +60,11 @@ def import_log_to_database():
     # open database to calculate num_worker
     session = setup_connection(create_db=True, path=args.database)
 
-    # WIP: add a minimal multiprocessing implementation
-    jobs = Queue()
-    workers = []
+    pool = Pool(processes=cpu_count())
+    incidents = [pool.apply_async(parse_incident, args=(read_from_file(f), args.import_parts,)) for f in args.files]
 
-    # only allow mulitple workers for postgres backend
-    if session.connection().engine.name == 'postgresql':
-    	num_workers = cpu_count()
-    else:
-        num_workers = 1
-
-    for w in range(num_workers):
-        p = Process(target=import_worker, args=(jobs, args.database, args.import_parts))
-        p.start()
-        workers.append(p)
-
-    # add files
-    for f in args.files:
-        jobs.put(f.name)
-
-    # add stop bit
-    for i in range(num_workers):
-        jobs.put(None)
-
-    # wait for workers to finish
-    for p in workers:
-        p.join()
+    # write stuff to database
+    output = [forward_to_db(session, p.get()) for p in incidents]
 
     # close database
     session.close()

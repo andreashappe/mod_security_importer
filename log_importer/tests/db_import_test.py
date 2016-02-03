@@ -7,6 +7,7 @@ from log_importer.log_import.parser import parse_incident
 from log_importer.log_import.reader import read_file
 from log_importer.data.db_helper import setup_connection
 from log_importer.data.objects import Incident
+from log_importer.importer import forward_to_db
 
 def common_data(i, incident):
     """ common tests that should hold in all cases. """
@@ -34,14 +35,11 @@ def test_import_without_parts():
 
     result = read_file('log_importer/tests/test_files/file_read_test.txt')
     session = setup_connection(create_db=True)
-    incident = parse_incident(session, result[0],\
-                              result[1], include_parts=False)
-
-    session.add(incident)
-    session.commit()
+    incident = parse_incident(result, include_parts=False)
+    incidentObject = forward_to_db(session, incident)
 
     # reload from db
-    i = session.query(Incident).filter(Incident.id == incident.id).first()
+    i = session.query(Incident).filter(Incident.id == incidentObject.id).first()
 
     common_data(i, incident)
     assert not i.parts
@@ -51,13 +49,11 @@ def test_import_with_parts():
 
     result = read_file('log_importer/tests/test_files/file_read_test.txt')
     session = setup_connection(create_db=True)
-    incident = parse_incident(session, result[0], result[1], include_parts=True)
-
-    session.add(incident)
-    session.commit()
+    incident = parse_incident(result, include_parts=True)
+    incidentObject = forward_to_db(session, incident)
 
     # reload from db
-    i = session.query(Incident).filter(Incident.id == incident.id).first()
+    i = session.query(Incident).filter(Incident.id == incidentObject.id).first()
 
     common_data(i, incident)
     assert len(i.parts) == 6
