@@ -1,5 +1,7 @@
-SQLAlchemy==1.0.7
+SQLAlchemy==1.0.11
 argparse==1.2.1
+future==0.15.2
+-e git+git@github.com:andreashappe/mod_security_importer.git@28472651b9d360a66c6e8ac64236b4a59b8c56f6#egg=log_importer-origin/multiprocessing
 nose==1.3.7
-future==0.14.3
-psqcopg2==2.6.1
+psycopg2==2.6.1
+wsgiref==0.1.2
