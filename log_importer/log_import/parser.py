@@ -9,7 +9,6 @@ import re
 import datetime
 
 from urllib.parse import urlparse
-from log_importer.data.objects import Part
 
 REGEXP_PART_A = '^\[([^\]]+)\] ([^ ]+) ([^ ]+) ([^ ]+) ([^ ]+) ([^ ]+)\n$'
 
@@ -100,7 +99,7 @@ def parse_incident(stuff, include_parts=False):
     if include_parts:
         for (cat, body) in parts.items():
             merged_part = "\n".join(body)
-            incident['parts'].append(Part(category=cat, body=merged_part))
+            incident['parts'].append({'category': cat, 'body': merged_part})
 
     # import details from 'B' part (if exists)
     if 'B' in parts:

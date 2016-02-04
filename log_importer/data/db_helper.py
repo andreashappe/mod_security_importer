@@ -36,17 +36,3 @@ def setup_connection(create_db=False, path=''):
         Base.metadata.create_all(engine)
 
     return session()
-
-
-def get_or_create(session, model, **kwargs):
-    """ analogous to ActiveRecord's find_or_create_by: test for
-        existence of a record by some given fields. If it does
-        not exist, create a new record"""
-    instance = session.query(model).filter_by(**kwargs).first()
-    if instance:
-        return instance
-    else:
-        instance = model(**kwargs)
-        session.add(instance)
-        session.commit()
-        return instance
