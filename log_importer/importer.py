@@ -186,7 +186,7 @@ def import_log_to_database():
         print("not adding parts")
 
     # open database to calculate num_worker
-    global internal_id
+    global internal_id, incidents, incident_categories
     global cache_destination, cache_source, cache_details
 
     session = setup_connection(create_db=True, path=args.database)
