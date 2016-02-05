@@ -82,7 +82,7 @@ def forward_to_db(session, i, id_counter, incident_cache, cache_destination, cac
         incident_cache.writeParts(conn)
         cache_details.sync_to_db(conn)
 
-    	session.commit()
+        session.commit()
         tmp = (datetime.now() - last).total_seconds()/diff*1000.0
         print("timing: : " + str(tmp) + "ms/import")
         last = datetime.now()
