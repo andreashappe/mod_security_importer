@@ -1,7 +1,8 @@
 import argparse
 import multiprocessing
 import sqlalchemy
-import sys
+import os,sys
+import functools
 
 from log_importer.log_import.parser import parse_incident
 from log_importer.log_import.reader import read_from_file
@@ -95,14 +96,14 @@ def retrieve_new_id_for(session, klass):
     return 1 if tmp is None else tmp+1
 
 
-def tmp(f):
-    return parse_incident(read_from_file(open(f, 'r')))
+def tmp(f, directory='./'):
+    return parse_incident(read_from_file(open(os.path.join(directory, f), 'r')))
 
 
 def import_log_to_database():
     parser = argparse.ArgumentParser(description="Import Log-Files into Database.")
     parser.add_argument('database', help="Database to import to")
-    parser.add_argument('files', metavar='File', type=argparse.FileType('r'), nargs='+')
+    parser.add_argument('files', nargs='+')
     parser.add_argument('--import-parts', help="import raw parts", action="store_true")
 
     args = parser.parse_args()
@@ -122,13 +123,23 @@ def import_log_to_database():
     incident_cache = IncidentCache()
 
     # files = [args.files[0].name]*20000
-    files = [ f.name for f in args.files ]
     with futures.ProcessPoolExecutor(max_workers=max(1, cpu_count()-1)) as executor:
+<<<<<<< e0144fe9d771a3bf4aa3cf2d7f29b87ed6c494b6
         for incident in executor.map(tmp, files):
             try:
                 forward_to_db(session, incident, incident_counter, incident_cache, cache_destination, cache_source, cache_details)
             except KeyError as e:
                 print("ERROR: key error {0}: {1}".format(e.errno, e.strerror))
+=======
+        for filename in args.files:
+            if os.path.isdir(filename):
+                for root, dirs, subfiles in os.walk(filename):
+                    for incident in executor.map(functools.partial(tmp, directory=root), subfiles):
+                        forward_to_db(session, incident, incident_counter, incident_cache, cache_destination, cache_source, cache_details)
+            else:
+                for incident in executor.map(tmp, [filename]):
+                    forward_to_db(session, incident, incident_counter, incident_cache, cache_destination, cache_source, cache_details)
+>>>>>>> initial directory support
 
     # close database
     conn = session.connection()
