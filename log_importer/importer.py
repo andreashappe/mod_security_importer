@@ -84,10 +84,10 @@ def forward_to_db(session, i, id_counter, incident_cache, cache_destination, cac
         cache_details.sync_to_db(conn)
 
         session.commit()
-	if sys.version_info > (2, 6):
-        	tmp = (datetime.now() - last).total_seconds()/diff*1000.0
-        	print("timing: : " + str(tmp) + "ms/import")
-        	last = datetime.now()
+        if sys.version_info > (2, 6):
+            tmp = (datetime.now() - last).total_seconds()/diff*1000.0
+            print("timing: : " + str(tmp) + "ms/import")
+            last = datetime.now()
     return incident
 
 def retrieve_new_id_for(session, klass):
