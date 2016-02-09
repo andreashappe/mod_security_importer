@@ -125,7 +125,10 @@ def import_log_to_database():
     files = [ f.name for f in args.files ]
     with futures.ProcessPoolExecutor(max_workers=max(1, cpu_count()-1)) as executor:
         for incident in executor.map(tmp, files):
-            forward_to_db(session, incident, incident_counter, incident_cache, cache_destination, cache_source, cache_details)
+            try:
+                forward_to_db(session, incident, incident_counter, incident_cache, cache_destination, cache_source, cache_details)
+            except KeyError as e:
+                print("ERROR: key error {0}: {1}".format(e.errno, e.strerror))
 
     # close database
     conn = session.connection()
