@@ -84,7 +84,7 @@ def forward_to_db(session, i, id_counter, incident_cache, cache_destination, cac
         cache_details.sync_to_db(conn)
 
         session.commit()
-        if sys.version_info > (2, 6):
+        if sys.version_info[0] > 2 or (sys.version_info[0] == 2 and sys.version_info[1] >= 7):
             tmp = (datetime.now() - last).total_seconds()/diff*1000.0
             print("timing: : " + str(tmp) + "ms/import")
             last = datetime.now()
