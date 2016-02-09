@@ -62,7 +62,7 @@ def test_import_with_parts():
     """ import file while saving (optional) parts. """
 
     result = read_file('log_importer/tests/test_files/file_read_test.txt')
-    session = setup_connection(True, "postgresql://modsec@localhost/modesc")
+    session = setup_connection(True, "postgresql://modsec@localhost/modsec")
 
     cache_destination = DestinationCache(session)
     cache_source = SourceCache(session)
