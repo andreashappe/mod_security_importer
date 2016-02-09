@@ -124,22 +124,20 @@ def import_log_to_database():
 
     # files = [args.files[0].name]*20000
     with futures.ProcessPoolExecutor(max_workers=max(1, cpu_count()-1)) as executor:
-<<<<<<< e0144fe9d771a3bf4aa3cf2d7f29b87ed6c494b6
-        for incident in executor.map(tmp, files):
-            try:
-                forward_to_db(session, incident, incident_counter, incident_cache, cache_destination, cache_source, cache_details)
-            except KeyError as e:
-                print("ERROR: key error {0}: {1}".format(e.errno, e.strerror))
-=======
         for filename in args.files:
             if os.path.isdir(filename):
                 for root, dirs, subfiles in os.walk(filename):
                     for incident in executor.map(functools.partial(tmp, directory=root), subfiles):
-                        forward_to_db(session, incident, incident_counter, incident_cache, cache_destination, cache_source, cache_details)
+                        try:
+                            forward_to_db(session, incident, incident_counter, incident_cache, cache_destination, cache_source, cache_details)
+                        except KeyError as e:
+                            print("ERROR: key error {0}: {1}".format(e.errno, e.strerror))
             else:
                 for incident in executor.map(tmp, [filename]):
-                    forward_to_db(session, incident, incident_counter, incident_cache, cache_destination, cache_source, cache_details)
->>>>>>> initial directory support
+                    try:
+                        forward_to_db(session, incident, incident_counter, incident_cache, cache_destination, cache_source, cache_details)
+                    except KeyError as e:
+                        print("ERROR: key error {0}: {1}".format(e.errno, e.strerror))
 
     # close database
     conn = session.connection()
