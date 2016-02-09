@@ -37,7 +37,7 @@ class SourceCache:
 
     def sync_to_db(self, conn):
         if self.journal:
-            conn.execute(Source.__table__.insert().values(self.journal.values()))
+            conn.execute(Source.__table__.insert().values(list(self.journal.values())))
         self.journal = {}
 
 class DestinationCache:
