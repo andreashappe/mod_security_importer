@@ -5,11 +5,12 @@ from log_importer.data.db_helper import setup_connection
 from log_importer.data.objects import Destination, IncidentCatalogEntry,\
                                       IncidentDetail, Incident, Source
 
+
 def retrieve_data(session):
     """ gets raw output data from the database """
-    return session.query(Source.ip, Destination.ip, Destination.port,\
-                         Incident.path, Incident.method, \
-                         IncidentCatalogEntry.message,\
+    return session.query(Source.ip, Destination.ip, Destination.port,
+                         Incident.path, Incident.method,
+                         IncidentCatalogEntry.message,
                          func.count(Destination.ip).label("count"))\
                   .filter(Incident.destination_id == Destination.id)\
                   .filter(IncidentDetail.incident_id == Incident.id)\

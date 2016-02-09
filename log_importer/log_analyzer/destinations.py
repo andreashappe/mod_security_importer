@@ -5,13 +5,14 @@ import argparse
 
 from sqlalchemy import func, desc
 from log_importer.data.db_helper import setup_connection
-from log_importer.data.objects import Destination, IncidentCatalogEntry,\
+from log_importer.data.objects import Destination, IncidentCatalogEntry,
                                       IncidentDetail, Incident
+
 
 def retrieve_data(session):
     """ gets raw output data from the database """
-    return session.query(Destination.ip, Destination.port,\
-                         IncidentCatalogEntry.message,\
+    return session.query(Destination.ip, Destination.port,
+                         IncidentCatalogEntry.message,
                          func.count(Destination.ip).label("count"))\
                   .filter(Incident.destination_id == Destination.id)\
                   .filter(IncidentDetail.incident_id == Incident.id)\

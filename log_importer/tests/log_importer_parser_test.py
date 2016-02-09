@@ -44,38 +44,33 @@ def test_parse_part_A_timestamp():
 
 def test_parse_incident():
     result = read_file('log_importer/tests/test_files/file_read_test.txt')
-    session = setup_connection(create_db=True)
-    incident = parse_incident(session, result[0], result[1])
+    incident = parse_incident(result)
 
-    assert incident.fragment_id == u'7cf8df3f'
-    assert incident.timestamp == datetime.datetime(2015, 3, 30, 21, 10, 38) # should be in UTC
-    assert incident.unique_id == u'VRm7zgr5AlMAAClwIZoAAAAU'
-    assert incident.source.ip == u'10.199.23.1'
-    assert incident.source.port == 40889
-    assert incident.destination.ip == u'1.2.3.4'
-    assert incident.destination.port == 18060
-    assert not incident.parts
+    assert incident['fragment_id'] == u'7cf8df3f'
+    assert incident['timestamp'] == datetime.datetime(2015, 3, 30, 21, 10, 38) # should be in UTC
+    assert incident['unique_id'] == u'VRm7zgr5AlMAAClwIZoAAAAU'
+    assert incident['source'][0] == u'10.199.23.1'
+    assert incident['source'][1] == 40889
+    assert incident['destination'][0] == u'1.2.3.4'
+    assert incident['destination'][1] == 18060
+    assert len(incident['parts']) == 0
 
 def test_parse_incident_with_parts():
     result = read_file('log_importer/tests/test_files/file_read_test.txt')
-    session = setup_connection(create_db=True)
-    incident = parse_incident(session, result[0], result[1], include_parts=True)
-    assert len(incident.parts) == 6
+    incident = parse_incident(result, include_parts=True)
+    assert len(incident['parts']) == 6
 
 def test_parse_incident_with_B_record():
     result = read_file('log_importer/tests/test_files/file_read_test.txt')
-    session = setup_connection(create_db=True)
-    incident = parse_incident(session, result[0], result[1], include_parts=True)
-    assert incident.host == u"somehostname.at", "unexpected host, was: %r" % incident.host
-    assert incident.path == u"/fubar/sr/10/SomeAction.do", "invalid path, was:%r" %incident.path
-    assert incident.method == u"GET", "unexpected HTTP method, was: %r" % incident.method
+    incident = parse_incident(result, include_parts=True)
+    assert incident['host'] == u"somehostname.at", "unexpected host, was: %r" % incident.host
+    assert incident['path'] == u"/fubar/sr/10/SomeAction.do", "invalid path, was:%r" %incident.path
+    assert incident['method'] == u"GET", "unexpected HTTP method, was: %r" % incident.method
 
 def test_parse_incident_with_H_record():
     result = read_file('log_importer/tests/test_files/file_read_test.txt')
-    session = setup_connection(create_db=True)
-    incident = parse_incident(session, result[0], result[1], include_parts=True)
+    incident = parse_incident(result, include_parts=True)
 
     expected_ids = sorted([960024, 981203])
-    found_ids = sorted([i.incident_catalog.catalog_id for i in incident.details])
-
+    found_ids = sorted(map(lambda x: int(x['id']), incident['details']))
     assert found_ids == expected_ids

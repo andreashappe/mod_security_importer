@@ -11,14 +11,16 @@ from log_importer.data.db_helper import get_base
 
 BASE = get_base()
 
+
 class Destination(BASE):
     """ Destination IP+Port. """
 
     __tablename__ = 'destinations'
     id = Column(Integer, primary_key=True)
 
-    ip = Column(String)
-    port = Column(Integer)
+    ip = Column(String, index=True)
+    port = Column(Integer, index=True)
+
 
 class Source(BASE):
     """ Source IP+Port. Maybe we should merge this with Destination
@@ -29,6 +31,7 @@ class Source(BASE):
 
     ip = Column(String)
     port = Column(Integer)
+
 
 class Incident(BASE):
     """ A single incident (host+destination+address) can contain
@@ -60,6 +63,7 @@ class Incident(BASE):
     method = Column(String)
     path = Column(String)
 
+
 class IncidentCatalogEntry(BASE):
     """ This is used within mod_security error messages to uniquely
         identify the incident definition. Move into a own object
@@ -71,7 +75,8 @@ class IncidentCatalogEntry(BASE):
     catalog_id = Column(Integer)
     config_file = Column(String)
     config_line = Column(Integer)
-    message = Column(String)
+    message = Column(String, index=True)
+
 
 class IncidentDetail(BASE):
     """ An incident can contain multiple sub-incident (aka IncidentDetail).

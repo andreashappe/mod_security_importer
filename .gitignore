@@ -1,2 +1,7 @@
 *.pyc
 *.swp
+env/
+.DS_Store
+*.egg-info
+build/
+dist/

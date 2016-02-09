@@ -4,6 +4,7 @@ import argparse
 from log_importer.data.db_helper import setup_connection
 from log_importer.data.objects import Incident, Source, Destination
 
+
 def output_details(incident, detail):
     """ outputs a single line (describing one incident) """
     print("%s %s %s:%s -> %s %s:%s%s: (%s) %s" % (\
@@ -13,6 +14,7 @@ def output_details(incident, detail):
             incident.method, incident.destination.ip, incident.destination.port,
             incident.path,
             incident.http_code, detail.incident_catalog.message))
+
 
 def output_overview():
     """ just outputs a (formatted) dump of the original data """
