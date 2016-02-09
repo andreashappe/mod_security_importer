@@ -41,7 +41,7 @@ def test_import_without_parts():
     """ import file without saving (optional) parts. """
 
     result = read_file('log_importer/tests/test_files/file_read_test.txt')
-    session = setup_connection(create_db=True)
+    session = setup_connection(True, "postgresql://modsec@localhost/modsec")
 
     cache_destination = DestinationCache(session)
     cache_source = SourceCache(session)
@@ -62,7 +62,7 @@ def test_import_with_parts():
     """ import file while saving (optional) parts. """
 
     result = read_file('log_importer/tests/test_files/file_read_test.txt')
-    session = setup_connection(create_db=True)
+    session = setup_connection(True, "postgresql://modsec@localhost/modesc")
 
     cache_destination = DestinationCache(session)
     cache_source = SourceCache(session)
